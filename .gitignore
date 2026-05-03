@@ -1,0 +1,19 @@
+# Generated artifacts
+out/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local Claude Code state
+.claude/
+
+# OS
+.DS_Store
+
+# Generated audio (only ever appears under out/, but defensive)
+*.mp3
+
+# NOTE: source.apkg (the upstream AnkiWeb input) IS tracked — it's needed
+# to reproduce the pipeline.
