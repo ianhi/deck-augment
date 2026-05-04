@@ -84,10 +84,12 @@ FRONT = (
     '<br><br>{{hint:English}}'
 )
 
+# Audio plays only on the back so the front stays a pure production challenge.
 BACK = (
     '<div class="priority">{{Priority}}</div>'
     '<div class="tense">{{Tense}}</div>'
     "{{cloze:ClozeText}}"
+    "{{Audio}}"
     '<div class="english">{{English}}</div>'
     '{{#Note}}<div class="note">{{Note}}</div>{{/Note}}'
 )
@@ -105,6 +107,7 @@ def main() -> None:
             {"name": "Tense"},
             {"name": "Note"},
             {"name": "Priority"},
+            {"name": "Audio"},
         ],
         templates=[{"name": "Cloze", "qfmt": FRONT, "afmt": BACK}],
         css=CSS,
@@ -112,7 +115,15 @@ def main() -> None:
     )
 
     deck = genanki.Deck(DECK_ID, DECK_NAME, description=DECK_DESCRIPTION)
+    audio_dir = OUT / "mx_pn_audio"
+    media_files = []
     for idx, e in enumerate(data):
+        audio_path = audio_dir / f"{idx:03d}.mp3"
+        audio_field = ""
+        if audio_path.exists():
+            fname = f"mxpn_{idx:03d}.mp3"
+            audio_field = f"[sound:{fname}]"
+            media_files.append(str(audio_path))
         note = genanki.Note(
             model=model,
             fields=[
@@ -121,6 +132,7 @@ def main() -> None:
                 e["tense"].replace("_", " "),
                 e.get("note", ""),
                 e["priority"],
+                audio_field,
             ],
             tags=[e["tense"], e["priority"]],
             guid=genanki.guid_for(f"mx-pn-{idx}"),
@@ -129,6 +141,7 @@ def main() -> None:
 
     out_path = OUT / "mx_personal_narrative.apkg"
     pkg = genanki.Package(deck)
+    pkg.media_files = media_files
     pkg.write_to_file(str(out_path))
     size_kb = out_path.stat().st_size / 1024
     print(f"Wrote {out_path} ({size_kb:.0f} KB, {len(deck.notes)} notes)")

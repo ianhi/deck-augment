@@ -86,10 +86,14 @@ CSS = """
   text-align: left;
 }
 .english-back {
-  color: #888;
-  font-size: 75%;
+  color: #555;
+  font-size: 80%;
   margin-top: 12px;
 }
+.english-back.small { font-size: 70%; color: #888; margin-top: 4px; }
+.english-back.tiny { font-size: 65%; color: #aaa; margin-top: 8px; }
+.hints-row { margin-top: 14px; }
+.hints-row a.hint { display: inline-block; margin: 0 8px; }
 .hint-link, a.hint {
   color: #888;
   font-size: 80%;
@@ -111,22 +115,30 @@ hr {
 # Mustache: {{#Field}}…{{/Field}} renders only if Field is non-empty.
 # {{hint:Field}} renders a click-to-reveal link.
 FRONT_TEMPLATE = (
-    '<div class="card-type">{{CardType}}</div>'
+    '<div class="card-type">{{CardType}} · {{Priority}}</div>'
     "{{PromptAudio}}"
     '<div class="cue">{{SpanishCue}}</div>'
-    "{{#SpanishPrompt}}{{hint:SpanishPrompt}}<br>{{/SpanishPrompt}}"
-    "{{hint:EnglishContext}}"
+    '<div class="hints-row">'
+    "{{#SpanishPrompt}}{{hint:SpanishPrompt}}{{/SpanishPrompt}}"
+    "{{#EnglishCue}}{{hint:EnglishCue}}{{/EnglishCue}}"
+    "{{hint:EnglishAnswer}}"
+    "</div>"
 )
 
+# Back: cue + audio still play (Anki replays prompt audio when card flips, and
+# answer audio autoplays). Both English translations are visible for verification,
+# the situational context is small at the bottom.
 BACK_TEMPLATE = (
-    '<div class="card-type">{{CardType}}</div>'
+    '<div class="card-type">{{CardType}} · {{Priority}}</div>'
     "{{PromptAudio}}"
     '<div class="cue">{{SpanishCue}}</div>'
     "<hr>"
     '<div class="answer">{{Spanish}}</div>'
     "{{AnswerAudio}}"
+    '<div class="english-back">{{EnglishAnswer}}</div>'
+    '{{#EnglishPrompt}}<div class="english-back small">↪ {{EnglishPrompt}}</div>{{/EnglishPrompt}}'
     '{{#Note}}<div class="note">{{Note}}</div>{{/Note}}'
-    '<div class="english-back">{{EnglishContext}}</div>'
+    '<div class="english-back tiny">{{EnglishContext}}</div>'
 )
 
 
@@ -148,6 +160,9 @@ def main() -> None:
         fields=[
             {"name": "Spanish"},
             {"name": "EnglishContext"},
+            {"name": "EnglishAnswer"},
+            {"name": "EnglishPrompt"},
+            {"name": "EnglishCue"},
             {"name": "Note"},
             {"name": "SpanishCue"},
             {"name": "SpanishPrompt"},
@@ -155,6 +170,7 @@ def main() -> None:
             {"name": "AnswerAudio"},
             {"name": "CardType"},
             {"name": "Category"},
+            {"name": "Priority"},
         ],
         templates=[{"name": "MX", "qfmt": FRONT_TEMPLATE, "afmt": BACK_TEMPLATE}],
         css=CSS,
@@ -191,6 +207,9 @@ def main() -> None:
             fields=[
                 e["spanish"],
                 e["english_context"],
+                e.get("english_answer", ""),
+                e.get("english_prompt") or "",
+                e.get("english_cue", ""),
                 e.get("note", ""),
                 e.get("spanish_cue", ""),
                 e.get("spanish_prompt") or "",
@@ -198,6 +217,7 @@ def main() -> None:
                 answer_audio_field,
                 e["card_type"],
                 e["category"],
+                e.get("priority", ""),
             ],
             tags=[e["category"], e["card_type"], e.get("priority", "")],
             guid=genanki.guid_for(f"mx-{orig_idx}"),
