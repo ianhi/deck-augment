@@ -17,6 +17,23 @@ languages (e.g. Bangla), the pieces to adapt:
   anki-defs-es-MX, spanish-cloze); swap to the user's Bangla note types
   when doing Bangla.
 
+## Ask the user before
+
+Decisions that recur across decks and shouldn't be made unilaterally:
+
+- **Voice selection** — audition Chirp3 HD voices on a sample sentence and let
+  the user choose. Don't pick from the catalog alone.
+- **Output format** — final `.apkg` (fresh import, loses review history) vs.
+  audio files + CSV merged into the user's existing deck (preserves history).
+- **Schema-bumping changes** — adding fields, modifying templates, etc. force
+  one-way sync. Warn before doing it.
+- **Dedup field mapping** — which fields in the user's other note types carry
+  the target-language headword. Don't guess; confirm per note type.
+- **Suspend lists** — derive candidates from the data (e.g. Peninsular-only
+  headwords), then confirm the exact set with the user before suspending.
+- **LLM choice for a new pass** — default is Gemini API (see above), but
+  confirm model + temperature when starting a new generation/translation task.
+
 ## Pitfalls worth remembering
 
 ### Source data: don't trust structural assumptions
@@ -152,10 +169,10 @@ Differences from the Spanish build:
   source vs. existing-user-decks situation. Instead, the operation is
   "consolidate across decks using existing notes" — more like de-duplication
   of the user's own data than merging with external content.
-- **Claude Code subagents, not Gemini API** — user prefers subagents
-  (free within Claude Code subscription) over paid API calls. Dispatch
-  them in batches of 10–15 parallel at a time. Use Sonnet 4.6 for quality
-  (Haiku was too lossy on Spanish lemma bolding).
+- **Gemini API for translation / sentence work** — user prefers Gemini over
+  Claude Code subagents for translation, bolding, and sentence improvements
+  (better quality). Subagents are fine for codebase tasks but not for the
+  language-generation passes.
 - **Chirp3 voice: `bn-IN-Chirp3-HD-Kore`** (confirmed in `../tts-compare`
   and user's memory).
 - **User's note types** to audit first (from earlier AnkiConnect survey):

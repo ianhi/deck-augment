@@ -91,6 +91,26 @@ are few and should be suspended — grep `source.apkg` extract to find exact set
    CSV to merge into the existing deck in Anki (preserves review history). Ask the
    user which they prefer before committing.
 
+## Repo layout
+
+Scripts are organized by project, with shared modules in `lib/`.
+
+```
+lib/      ankiconnect, gemini_prompts, sentence_sampling, numbers_seed, paths
+bangla/   active Bangla pipeline (vocab + numbers): generate_sentences,
+          translate_sentences, assess_naturalness, apply_revisions, audit_*,
+          migrate_*, tts_run, build_numbers, …
+mx/       active Mexican-Spanish work: build_pack, build_preview,
+          build_personal_narrative, build_conjugation_cloze, tts_run, …
+spanish/  Spanish 5000 era (mostly frozen): aggregate_bolded, repack,
+          tts_run, dedup, prep_bold_batches, …
+archive/  one-offs preserved for reference
+```
+
+Scripts run as before: `uv run bangla/tts_run.py --profile bangla-vocab`. Each
+subdir script has a 3-line `sys.path.insert(...)` bootstrap so `from lib.foo
+import bar` resolves. Don't move scripts back to root without restoring imports.
+
 ## Conventions
 
 - Python + `uv` for dependency management.
@@ -98,6 +118,14 @@ are few and should be suspended — grep `source.apkg` extract to find exact set
 - Script output goes in `out/` (gitignored).
 - Intermediate audio files go in `out/audio/<note_id>.mp3`.
 - When modifying the deck, never overwrite `source.apkg` — write to `out/enhanced.apkg`.
+- **Interact with Anki via AnkiConnect (HTTP localhost:8765), not file imports.**
+  Anki runs as a flatpak (`net.ankiweb.Anki`) with no filesystem access outside
+  its sandbox, so `importPackage` with an absolute path fails. The established
+  pattern is: `createDeck` + `createModel` + `addNotes` (and `storeMediaFile`
+  for audio), batched via the `multi` action. See `mx/push_conjugation.py` for
+  the canonical example. `genanki` is still used to produce `.apkg` artifacts
+  for sharing / archival, but routine pushes to the user's collection go
+  through AnkiConnect.
 
 ## What NOT to do
 
