@@ -87,6 +87,17 @@ PROFILES: dict[str, Profile] = {
         audio_dirname="audio_bn_numbers",
         index_filename="audio_bn_numbers_index.jsonl",
     ),
+    "bangla-defs": Profile(
+        name="bangla-defs",
+        model="anki-defs-bn-IN",
+        headword_field="Word",
+        sentence_field="Example",
+        word_audio_field="WordAudio",
+        sentence_audio_field="ExampleAudio",
+        media_prefix="bn_defs_",
+        audio_dirname="audio_bn_defs",
+        index_filename="audio_bn_defs_index.jsonl",
+    ),
     "bangla-conjugation": Profile(
         name="bangla-conjugation",
         model="Bangla Conjugation",
