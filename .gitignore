@@ -12,6 +12,12 @@ __pycache__/
 # OS
 .DS_Store
 
+# Local Anki backups (large; user-specific)
+backups/
+
+# Secrets
+.env
+
 # Generated audio (only ever appears under out/, but defensive)
 *.mp3
 
