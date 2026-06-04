@@ -1,0 +1,100 @@
+/* No hardcoded text/background colors — inherit from Anki's theme so the
+   deck adapts to dark mode (mobile), desktop default gray, and light themes.
+   Emphasis comes from font-size, font-weight, and font-style. Lines/buttons
+   use semi-transparent neutrals (rgba) that tint whatever bg is underneath. */
+.card {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 22px;
+  text-align: center;
+  padding: 16px;
+}
+.meta {
+  font-size: 70%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  opacity: 0.75;
+}
+/* Pattern slot — identical position and size on front and back.
+   Front: underscores. Back: filled with the answer letters. */
+.pattern {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 180%;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  margin: 12px 0;
+  min-height: 1.4em;
+}
+.active-clue {
+  font-size: 105%;
+  font-weight: 600;
+  font-style: italic;
+  margin: 14px auto 6px;
+  max-width: 32em;
+}
+/* Reserve enough vertical space for up to ~12 short revealed clues so
+   the hint row below doesn't shift as the user clicks "+ clue". */
+.extra-clues {
+  font-size: 90%;
+  opacity: 0.85;
+  min-height: 14em;
+  text-align: center;
+}
+.extra-clue { margin: 3px 0; }
+.hint-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.hint-btn {
+  padding: 6px 14px;
+  background: rgba(127, 127, 127, 0.18);
+  border: 1px solid rgba(127, 127, 127, 0.5);
+  border-radius: 4px;
+  font-size: 80%;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.hint-btn:hover { background: rgba(127, 127, 127, 0.32); }
+.hint-btn.spent { opacity: 0.4; cursor: default; }
+/* Back panel for definition + note — distinct visual block. */
+.meaning {
+  margin: 18px 12px 8px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.10);
+  text-align: left;
+}
+.definition { font-size: 100%; }
+.note {
+  font-size: 88%;
+  font-style: italic;
+  margin-top: 8px;
+  opacity: 0.85;
+}
+.clues-header {
+  margin: 22px 12px 6px;
+  text-align: left;
+  font-size: 78%;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  border-top: 1px solid rgba(127, 127, 127, 0.4);
+  padding-top: 10px;
+}
+.all-clues {
+  margin: 4px 12px 0;
+  text-align: left;
+  font-size: 90%;
+}
+.all-clues ol { margin: 4px 0; padding-left: 24px; }
+.all-clues li { margin: 2px 0; }
+hr {
+  border: none;
+  border-top: 1px solid rgba(127, 127, 127, 0.4);
+  margin: 14px 0;
+}

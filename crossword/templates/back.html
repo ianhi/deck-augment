@@ -1,0 +1,19 @@
+<!-- The back-marker tells front.js it is being included in a back render,
+     so it should load the cached state instead of generating fresh state. -->
+<div id="back-marker" data-side="back" style="display:none"></div>
+{{FrontSide}}
+<!-- Back JS runs immediately after the front content so its pattern-fill
+     and hint-row-hide overrides take effect synchronously, before any
+     further DOM is painted. Moving the script later in the document
+     caused a fill-in regression. -->
+<script>
+{{!-- INJECT_BACK_JS --}}
+</script>
+<div class="meaning">
+  <div class="definition">{{Definition}}</div>
+  {{#Note}}<div class="note">{{Note}}</div>{{/Note}}
+</div>
+<div class="clues-header">All clues ({{ClueCount}})</div>
+<div class="all-clues">
+  {{!-- INJECT_ALL_CLUES_LIST --}}
+</div>
